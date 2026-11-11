@@ -1,0 +1,69 @@
+name: Build iOS (unsigned IPAs)
+
+# Produces two files:
+#   Aurora-widget.ipa    - the app with the Home Screen / Lock Screen widget (install with AltStore or SideStore)
+#   Aurora-no-widget.ipa - the same app without the widget (fallback if the widget build fails)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate platform folders
+        run: python3 tool_setup.py
+
+      - name: Packages
+        run: flutter pub get
+
+      - name: Add Siri (App Intents)
+        continue-on-error: true
+        run: ruby tool_setup_ios_intents.rb
+
+      - name: Build without widget
+        run: |
+          flutter build ios --release --no-codesign
+          rm -rf Payload && mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qr Aurora-no-widget.ipa Payload
+          rm -rf Payload
+
+      - name: Add the iOS widget
+        id: widget
+        continue-on-error: true
+        run: |
+          ruby tool_setup_ios_widget.rb
+          cd ios && pod install && cd ..
+          flutter build ios --release --no-codesign
+          test -d build/ios/iphoneos/Runner.app/PlugIns/AuroraWidget.appex
+          # An unsigned build carries no entitlements. Stamp them in so AltStore / SideStore can see that the
+          # app and the widget share an App Group and give both the same one.
+          brew install ldid
+          ldid -S"ios/Runner/Runner.entitlements" build/ios/iphoneos/Runner.app/Runner
+          ldid -S"ios/AuroraWidget/AuroraWidget.entitlements" build/ios/iphoneos/Runner.app/PlugIns/AuroraWidget.appex/AuroraWidget
+          rm -rf Payload && mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qr Aurora-widget.ipa Payload
+
+      - name: Widget build log note
+        if: ${{ steps.widget.outcome == 'failure' }}
+        run: echo "::warning::The widget build failed; only Aurora-no-widget.ipa was produced. See the 'Add the iOS widget' step."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aurora-ipas
+          path: |
+            Aurora-no-widget.ipa
+            Aurora-widget.ipa
+          if-no-files-found: error

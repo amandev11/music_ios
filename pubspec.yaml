@@ -1,0 +1,66 @@
+name: aurora_music
+description: "Music - streaming and local player with YouTube Music and JioSaavn."
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.27.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ">=1.2.0 <2.0.0"
+  shared_preferences: ">=2.3.0 <3.0.0"
+  path_provider: ">=2.1.0 <3.0.0"
+  path: ">=1.9.0 <2.0.0"
+  pointycastle: ">=3.9.0 <5.0.0"
+  webview_windows: ">=0.4.0 <1.0.0"
+  just_audio: ">=0.9.40 <1.0.0"
+  media_kit: ">=1.1.11 <2.0.0"
+  # Per-platform libmpv builds. iOS uses the full (video) build: the audio-only build ships a reduced FFmpeg
+  # without the filters the equalizer, spatial widening and DJ mixing rely on.
+  media_kit_libs_ios_video: ">=1.1.0 <2.0.0"
+  media_kit_libs_macos_audio: ">=1.1.0 <2.0.0"
+  media_kit_libs_windows_audio: ">=1.0.0 <2.0.0"
+  media_kit_libs_android_audio: ">=1.3.0 <2.0.0"
+  media_kit_libs_linux: ">=1.1.0 <2.0.0"
+  audio_session: ">=0.1.21 <1.0.0"
+  audio_service: ">=0.18.15 <1.0.0"
+  youtube_explode_dart: ">=3.0.5 <4.0.0"
+  google_fonts: ">=6.2.1 <9.0.0"
+  file_picker: ">=8.1.0 <11.0.0"
+  audio_metadata_reader: ">=1.4.0 <2.0.0"
+  web: ">=1.0.0 <2.0.0"
+  aurora_pcm:
+    path: packages/aurora_pcm
+  home_widget: ">=0.7.0 <1.0.0"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ">=4.0.0"
+  flutter_launcher_icons: ">=0.14.0 <1.0.0"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon/icon.png
+
+flutter_launcher_icons:
+  image_path: assets/icon/icon.png
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: assets/icon/icon.png
+    background_color: "#FA243C"
+    theme_color: "#FA243C"
+  windows:
+    generate: true
+    image_path: assets/icon/icon.png
+    icon_size: 256
+  macos:
+    generate: true
+    image_path: assets/icon/icon.png
