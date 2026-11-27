@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_aura_bg">#010103</color>
+    <color name="ic_keystone_bg">#000000</color>
+    <color name="ic_deck_bg">#1D2131</color>
+    <color name="ic_volt_bg">#000000</color>
+    <color name="ic_axis_bg">#000000</color>
+    <color name="ic_starlight_bg">#010101</color>
+    <color name="ic_pressing_bg">#EF4E21</color>
+    <color name="ic_midnights_bg">#8E95B6</color>
+    <color name="ic_glassnote_bg">#000000</color>
+    <color name="ic_halo_bg">#0B0B0B</color>
+    <color name="ic_pulse_bg">#030303</color>
+    <color name="ic_ember_bg">#000000</color>
+    <color name="ic_mercury_bg">#000000</color>
+    <color name="ic_genesis_bg">#090909</color>
+    <color name="ic_prism_bg">#050505</color>
+    <color name="ic_dust_bg">#000001</color>
+    <color name="ic_voyager_bg">#030200</color>
+    <color name="ic_crate_bg">#242628</color>
+    <color name="ic_molten_bg">#1C1D27</color>
+    <color name="ic_nightspin_bg">#161536</color>
+    <color name="ic_vortex_bg">#0D0322</color>
+    <color name="ic_chrome_bg">#060606</color>
+    <color name="ic_cobalt_bg">#030405</color>
+    <color name="ic_afterglow_bg">#E6261D</color>
+    <color name="ic_soundstar_bg">#D9D9D9</color>
+    <color name="ic_spotify_bg">#FDFAF1</color>
+    <color name="ic_applemusic_bg">#FA3F57</color>
+    <color name="ic_keycapkeystone_bg">#000000</color>
+    <color name="ic_keycapmusic_bg">#000000</color>
+    <color name="ic_applewordmark_bg">#000000</color>
+</resources>

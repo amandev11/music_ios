@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="Music: streaming and local player.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Music">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="manifest" href="manifest.json">
+  <title>Music</title>
+  <style>html,body{margin:0;background:#000}</style>
+</head>
+<body>
+  <!-- Off-screen (not display:none) so browsers keep the audio running. -->
+  <div style="position:fixed;left:-10000px;top:0;width:200px;height:200px;overflow:hidden" aria-hidden="true">
+    <div id="aurora-yt-host"></div>
+  </div>
+
+  <script>
+    // Bridge between Dart (lib/engine/yt_iframe_web.dart) and the YouTube IFrame Player API.
+    window.auroraYT = (function () {
+      let player = null, ready = false, apiReady = false, pendingId = null, cb = null, wantPlay = true;
+      const emit = (type, value) => { if (cb) cb(type, value); };
+
+      function create() {
+        if (player || !apiReady) return;
+        player = new YT.Player('aurora-yt-host', {
+          height: '200', width: '200',
+          playerVars: { playsinline: 1, controls: 0, disablekb: 1, fs: 0, rel: 0, origin: location.origin },
+          events: {
+            onReady: () => {
+              ready = true;
+              if (pendingId) { player.loadVideoById(pendingId); pendingId = null; }
+              emit('ready', 0);
+            },
+            onStateChange: (e) => emit('state', e.data),
+            onError: (e) => emit('error', e.data),
+          },
+        });
+      }
+
+      window.onYouTubeIframeAPIReady = () => { apiReady = true; create(); };
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+
+      return {
+        setCallback(f) { cb = f; },
+        load(id) {
+          if (ready) player.loadVideoById(id);
+          else { pendingId = id; create(); }
+        },
+        play() { if (ready) player.playVideo(); },
+        pause() { if (ready) player.pauseVideo(); },
+        seek(sec) { if (ready) player.seekTo(sec, true); },
+        setRate(r) { if (ready) player.setPlaybackRate(r); },
+        setVolume(v) { if (ready) player.setVolume(v); },
+        time() { return ready ? player.getCurrentTime() || 0 : 0; },
+        duration() { return ready ? player.getDuration() || 0 : 0; },
+      };
+    })();
+  </script>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
